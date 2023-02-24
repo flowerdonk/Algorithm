@@ -1,44 +1,23 @@
-# 주사위 갯수 입력
-Dice_num = int(input())
+N = int(input()) # 주사위의 개수
+dices = [list(map(int, input().split())) for _ in range(N)] # 주사위 종류
+updown = {0 : 5, 1 : 3, 2 : 4, 3 : 1, 4 : 2, 5 : 0} # 마주보는 주사위 인덱스
+mx = 0 # 최댓값
+# 현재 주사위 아래 인덱스 -> 현재 주사위 위 인덱스 -> 현재 주사위 위 값 -> 다음 주사위 아래 값 -> 다음 주사위 아래 인덱스 반복
+for fst_idx in range(6): # 맨 아래 주사위 변경
+    total = 0 # 총합
+    down_idx = fst_idx # 아래 인덱스
+    up_idx = updown[fst_idx] # 위 인덱스
+    for build in range(N): # 옆면을 바꿔야할 주사위 총 개수 = 전체 개수
+        down = dices[build][down_idx] # 현재 주사위 아래 값
+        up = dices[build][up_idx] # 현재 주사위 위 값
+        sides = list(set(dices[build]) - set([down, up])) # 주사위에서 위 아래 값 제거
+        face = max(sides) # 옆면 중 최대값
+        total += face # 총합 구하기 위함
+        if build <= N - 2: # 마지막 주사위 직전까지 위 아래 값 찾기
+            down_idx = dices[build + 1].index(up) # 아래 인덱스 -> 전 주사위 위 값을 가진 다음 주사위 아래 인덱스
+            up_idx = updown[down_idx] # 위 인덱스
 
-# 주사위 종류 입력, 2차원 리스트
-Dices = [] * Dice_num
-for i in range(Dice_num):
-    Dices.append(list(map(int, input().split())))
+    if mx <= total: # 최댓값 갱신
+        mx = total
 
-# 주사위 종류를 입력받은 후, 함수 정의
-# 주사위 1개, 아랫값을 입력받아 최대 옆면 값, 반대 값 리턴하는 함수
-def find_maxside_bottom(Dice, bottom):
-    for i in range(6): # 인덱스 순환
-        if Dice[i] == bottom: # 아랫값을 가진 인덱스 찾기
-            idx = i # 인덱스
-            break
-    
-    # (최대 옆면 값, 반대 값) 리턴
-    if idx == 1:
-        return (max(Dice[0], Dice[2], Dice[4], Dice[5]), Dice[3])
-    elif idx == 2:
-        return (max(Dice[0], Dice[1], Dice[3], Dice[5]), Dice[4])
-    elif idx == 3:
-        return (max(Dice[0], Dice[2], Dice[4], Dice[5]), Dice[1])
-    elif idx == 4:
-        return (max(Dice[0], Dice[1], Dice[3], Dice[5]), Dice[2])
-    elif idx == 5:
-        return (max(Dice[1], Dice[2], Dice[3], Dice[4]), Dice[0])
-    elif idx == 0:
-        return (max(Dice[1], Dice[2], Dice[3], Dice[4]), Dice[5])
-
-
-max_sum = 0 # 최종 최대값
-for i in range(1, 7): # 1 ~ 6 주사위 값
-    bottom = i # 맨 아랫값 설정
-    total = 0
-
-    for num in range(Dice_num):
-        max_side, bottom = find_maxside_bottom(Dices[num], bottom) # 최대 옆면 값, 반대 값 = t번째 주사위, 아랫값
-        total += max_side # 옆면 값 총합
-
-    if max_sum <= total: # 최종 최대값 갱신
-        max_sum = total
-
-print(max_sum)
+print(mx)
