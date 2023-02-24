@@ -20,11 +20,11 @@ for n in range(studentN):
         li = idx - 1 # 왼쪽으로
         ri = idx + 1 # 오른쪽으로 인덱스 이동
         while 0 <= li < idx and idx < ri < switchN: # 양 옆 인덱스가 범위 내
-            if switches[li] == switches[ri]:
-                switch(li)
+            if switches[li] == switches[ri]: # 스위치가 같으면
+                switch(li) # 변경
                 switch(ri)
-                li -= 1
-                ri += 1
+                li -= 1 # 왼쪽으로 이동
+                ri += 1 # 오른쪽으로 이동
             else:
                 break
 
