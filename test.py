@@ -1,42 +1,32 @@
 import sys
 sys.stdin = open('input.txt')
 
-N = int(input()) # 기둥 개수
-buildings = [list(map(int, input().split())) for _ in range(N)] # [기둥 인덱스, 높이]
-buildings.sort(key = lambda x: x[0]) # 인덱스 값으로 정렬
-end_idx = buildings[-1][0] # 끝 인덱스
-start_idx = buildings[0][0] # 첫 인덱스
-mx_idx, mx = max(buildings, key = lambda x: x[1]) # 가장 큰 높이 인덱스, 높이
+K = int(input())
+data = [list(map(int, input().split())) for _ in range(6)]
+l = []
+h = []
 
-area = 0
-top = buildings[0][1]
-for n in range(len(buildings)):
-    idx = buildings[n][0]
-    if idx < mx_idx: # 최고점 직전까지 더 큰 값을 갱신하며 값 추가
-        if idx >= top:
-            top = buildings[n][1]
-        for _ in range(buildings[n + 1][0] - idx):
-            area += top
+for d in data:
+    if d[0] == 1 or d[0] == 2:
+        l.append(d[1])
+    else:
+        h.append(d[1])
 
-    elif idx == mx_idx: # 최고점 부분
-        area += mx
-        top = 0
-        m_idx = n
+l.sort()
+h.sort()
 
-    else: # 끝에서부터 최고점 직전까지 더 큰 값을 갱신하며 값 추가
-        if buildings[len(buildings) - (n - m_idx)][1] >= top:
-            top = buildings[len(buildings) - (n - m_idx)][1]
-        for _ in range(buildings[len(buildings) - (n - m_idx)][0] - buildings[len(buildings) - (n + 1 - m_idx)][0]):
-            area += top
+length = l[-1]
+height = h[-1]
 
-print(area)
+for n in range(len(data)):
+    if data[n][1] == length or data[n][1] == height:
+        l_idx = n
+# 최종 길이가 5, 1 일때 5를 기준으로 하게 됨
 
+minus1 = data[(l_idx + 2) % 6][1]
+minus2 = data[(l_idx + 3) % 6][1]
 
-
-
-
-
-
-
+ans = length * height - minus1 * minus2
+print(ans * K)
 
 
