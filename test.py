@@ -18,6 +18,7 @@ for d in data:
         n = n1 if n1 <= n2 else n2
         distance += n
     elif d[0] == x:
-        pass
+        n = d[1] - y if
+        distance +=
     else:
         pass
