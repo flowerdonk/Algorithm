@@ -1,42 +1,20 @@
 import sys
 sys.stdin = open('input.txt')
 
-def Max(arr):
-    findMax = []
+T = 10
+for tc in range(1, T + 1):
+    _ = input()
+    data = [list(map(int, input().split())) for _ in range(100)]
+    result = [0] * 202
 
-    for i in range(len(arr)):
-        sum = 0
-        for r in range(len(arr[i])):
-            sum += arr[i][r]
-        findMax.append(sum)
+    for i in range(100):
+        for j in range(100):
+            if i == j:
+                result[200] += data[i][j]
+            if i + j == 4:
+                result[201] += data[i][j]
 
-    for i in range(len(arr)):
-        sum = 0
-        for r in range(len(arr[i])):
-            sum += arr[r][i]
-        findMax.append(sum)
+            result[i] += data[i][j]
+            result[j + 100] += data[i][j]
 
-    for i in range(len(arr)):
-        sum = 0
-        for r in range(len(arr[i])):
-            if i == r:
-                sum += arr[i][r]
-        findMax.append(sum)
-
-    for i in range(len(arr)):
-        sum = 0
-        for r in range(len(arr[i]), 0, -1):
-            if i == r:
-                sum += arr[i][r]
-        findMax.append(sum)
-    # print(findMax)
-    return max(findMax)
-
-result = []
-for _ in range(10):
-    N = int(input())
-    Tcase = [list(map(int, input().split())) for _ in range(100)]
-    result.append(Max(Tcase))
-
-for i in range(10):
-    print(f'#{i + 1} {result[i]}')
+    print(f'#{tc} {max(result)}')
