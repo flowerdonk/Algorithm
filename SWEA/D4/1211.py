@@ -3,6 +3,7 @@ sys.stdin = open('input.txt')
 
 N = 100
 T = 10
+
 for tc in range(1, T + 1):
     _ = input()
     data = [list(input().split()) for _ in range(N)]
