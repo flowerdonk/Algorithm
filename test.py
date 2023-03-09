@@ -1,45 +1,45 @@
+from collections import deque
 import sys
 sys.stdin = open('input.txt')
 
-M, N, H = map(int, input().split()) # 가로, 세로, 높이
-data = [[list(map(int, input().split())) for _ in range(N)] for _ in range(H)]
-ans = -1
-# 상, 우, 하, 좌, 앞, 뒤 [H, N, M]
-direction = [[0, -1, 0], [0, 0, 1], [0, 1, 0], [0, 0, -1], [-1, 0, 0], [1, 0, 0]]
+'''
+이진트리가 아닌 트리 구조
+리프부터 루트까지 거리 확인
+'''
 
-q = []
-cnt0 = 0
-visited = [[[0] * M for _ in range(N)] for _ in range(H)] # 익는 턴 저장
-for h in range(H):
-    for n in range(N):
-        for m in range(M):
-            if data[h][n][m] == 1: # 익은 사과
-                q.append((h, n, m)) # 스택에 추가 -> 시작점
-                visited[h][n][m] += 1 # 시작점 표시
-            elif data[h][n][m] == 0: # 안익은 사과 갯수 추가
-                cnt0 += 1
+N = int(input())
+data = [list(map(int, input().split())) for _ in range(N - 1)]
+parents = [-1] + [0 for _ in range(N)] # idx : 자식노드, val : 부모노드
+temp = [[] for _ in range(N + 1)] # idx : 부모노드, val : 자식노드
+q = deque() # 자식노드 저장할 queue
+leaf = [] # leaf노드 저장할 queue
+visited = [0] * (N - 1) # 방문표시 -> 정렬 불가, idxerror 방지
+ans = 0
 
-if cnt0 == 0: # 안익은 사과가 없으면 바로 종료
-    q.clear()
-    ans = 1
+# root의 자식노드 찾기
+for n in range(N - 1):
+    if 1 in data[n]: # root가 있을 때
+        child = data[n][0] if data[n][1] == 1 else data[n][1] # 1이 아닌 다른 요소가 자식노드
+        q.append(child) # 시작점 추가
+        visited[n] += 1 # 방문 표시
+        parents[child] = 1 # 부모 표시
+        temp[1].append(child)
 
+# parents 형성
 while q:
-    sh, sn, sm = q.pop(0)
-    data[sh][sn][sm] = 1 # 익음
+    parent = q.popleft() # 자식노드 -> 부모노드
 
-    for d in direction:
-        nh, nn, nm = sh + d[0], sn + d[1], sm + d[2] # 이동할 좌표
-        if 0 <= nh < H and 0 <= nn < N and 0 <= nm < M: # 범위 내
-            if data[nh][nn][nm] == 0: # 안 익은 사과
-                if visited[nh][nn][nm] == 0: # 방문한 적 X
-                    q.append((nh, nn, nm)) # 큐에 추가
-                    visited[nh][nn][nm] = visited[sh][sn][sm] + 1 # 방문 턴 기록
-                    ans = visited[nh][nn][nm] # 해당 턴 저장
+    for n in range(N - 1):
+        if parent in data[n] and visited[n] == 0: # 부모노드의 자식노드 찾기
+            child = data[n][0] if data[n][1] == parent else data[n][1] # 부모노드가 아닌 다른 요소가 자식노드
+            parents[child] = parent # 부모 표시
+            q.append(child) # 자식 노드 추가
+            visited[n] += 1 # 방문 표시
+            temp[parent].append(child)
 
-for h in range(H):
-    for n in range(N):
-        for m in range(M):
-            if data[h][n][m] == 0: # 안 익은 사과
-                ans = 0
+for n in range(1, N + 1): # leaf 찾기
+    if len(temp[n]) == 0:
+        leaf.append(n)
 
-print(f'{ans - 1}')
+
+print(ans)
