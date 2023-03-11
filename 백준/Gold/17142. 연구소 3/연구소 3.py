@@ -49,7 +49,7 @@ else:
 
 
         for i in range(N):
-            if mx == -1:
+            if mx == 10000:
                 break
             for j in range(N):
                 if data[i][j] == 0 and visited[i][j] == -1:
