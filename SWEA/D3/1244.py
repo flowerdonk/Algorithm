@@ -1,9 +1,6 @@
-from sys import stdin
-stdin = open('input.txt')
-
-T = int(stdin.readline())
+T = int(input())
 for tc in range(1, T + 1):
-    Numbers, turn = stdin.readline().split()
+    Numbers, turn = input().split()
     Numbers = list(map(int, list(Numbers)))
     turn = int(turn)
     N = len(Numbers)
