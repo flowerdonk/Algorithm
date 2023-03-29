@@ -12,12 +12,12 @@ for L, N in cubes: # 한 변의 길이, 개수
     total *= 8 # 전 큐브 1개 = 다음 큐브 8개 ex) 4 * 4 * 4 = (2 * 2 * 2) * 8
 
     fill = (l // L) * (w // L) * (h // L) - total # 큐브로 전체 채웠을 때 개수 - 전에 이미 채운 부분
-    fill = N if N <= fill else fill
+    fill = N if N <= fill else fill # 큐브 개수보다 크면 큐브 개수만큼만 채우기
 
-    total += fill
-    ans += fill
+    total += fill # 영역에 추가
+    ans += fill # 개수에 추가
 
-if total < l * w * h:
+if total < l * w * h: # 채워진 영역이 총 영역보다 작으면 다 못채운 것
     print(-1)
 else:
     print(ans)
