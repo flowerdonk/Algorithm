@@ -1,15 +1,22 @@
 import sys
 sys.stdin = open('input.txt')
-def task(idx, n):
-    if idx == N:
-        mx.append(n)
+def task(i, n):
+    global mx
+
+    if n <= mx:
         return
 
-    for a in data[idx]:
-        if a != 0:
-            n *= a / 100
-            task(idx + 1, n)
-            n /= a / 100
+    if i == N:
+        mx = max(mx, n)
+        return
+
+    for j in range(N):
+        if data[i][j] != 0:
+            if not visited[j]:
+                new_n = n * data[i][j] / 100
+                visited[j] = 1
+                task(i + 1, new_n)
+                visited[j] = 0
         else:
             continue
 
@@ -17,7 +24,9 @@ T = int(input())
 for tc in range(1, T + 1):
     N = int(input())
     data = [list(map(int, input().split())) for _ in range(N)] # idx 직원이 1~N번째 일을 성공할 확률 [, , ...,]
-    mx = []
+    visited = [0] * N
+    mx = 0
     task(0, 1)
-    ans = max(mx) * 100
-    print('%.6f'%ans)
+    mx *= 100
+    print(f'#{tc} ', end="")
+    print('%.6f'%mx)
