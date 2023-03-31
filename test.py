@@ -1,41 +1,39 @@
-import sys
-sys.stdin = open('input.txt')
+import heapq
+INF = int(1e9) # 무한 값
 
-def qsort(A, start, end):
-    if start >= end:
-        return
-    pivot = start    # 첫 번째 원소
-    left = start + 1 # 피봇보다 큰 값을 찾을 때까지 오른쪽 이동, 피봇 다음 값
-    right = end      # 피봇보다 작은 값을 찾을 때까지 왼쪽 이동
+v, e = map(int, input().split()) # 노드 개수, 간선 개수
+first = int(input()) # 시작 노드 번호
+graph = [[] for _ in range(v + 1)] # 연결 노드 관계 리스트
+distance = [INF] * (v + 1) # 최단 거리, 무한으로 초기화
 
-    # 교차 X
-    while left <= right:
-        while left <= right and A[left][0] <= A[pivot][0]:  # 큰 값을 마주치면 벗어남
-            if A[left][0] == A[pivot][0]:                   # x가 같은 값일 경우
-                if A[left][1] > A[pivot][1]:                # y가 더 크면 벗어남 -> 더 큰 수
-                    break
-            left += 1                                       # 큰 값 찾을 때까지 오른쪽으로 이동
-        while left <= right and A[right][0] >= A[pivot][0]: # 작은 값을 마주치면 벗어남
-            if A[right][0] == A[pivot][0]:                  # x가 같은 값을 경우
-                if A[right][1] < A[pivot][1]:               # y가 더 작으면 벗어남 -> 더 작은 수
-                    break
-            right -= 1                                      # 작은 값을 찾을 때까지 왼쪽으로 이동
+for _ in range(e):
+    start, end, cost = map(int, input().split()) # start에서 end까지의 비용 cost
+    graph[start].append((end, cost))
 
-        # 교차 X
-        if left < right:
-            A[left], A[right] = A[right], A[left]
-    # 교차 O
+
+def dijkstra(start):
+    q = []
+    heapq.heappush(q, (0, start)) # 시작 노드로 가기 위한 최단 경로 0 설정, 큐에 삽입
+    distance[start] = 0 # 시작 노드 초기화
+
+    while q: # 큐가 비어있지 않으면
+        dist, now = heapq.heappop(q) # 최단 거리가 가장 짧은 노드 꺼내기
+
+        if distance[now] < dist: # 현재 노드가 이미 처리된 적이 있는 노드면 무시
+            continue
+
+        for i in graph[now]: # 현재 노드 인접 노드 확인
+            cost = dist + i[1]
+
+            if cost < distance[i[0]]: # 현재 노드를 거쳐 이동하는 거리가 더 짧은 경우
+                distance[i[0]] = cost
+                heapq.heappush(q, (cost, i[0]))
+
+dijkstra(first)
+
+for i in range(1, v + 1): # 1노드부터의 최단 거리 출력
+    if distance[i] == INF:
+        print("INFINITY")
     else:
-        A[pivot], A[right] = A[right], A[pivot]              # 이후 반복문 탈출
+        print(distance[i])
 
-    qsort(A, start, right - 1)
-    qsort(A, right + 1, end)
-
-N = int(sys.stdin.readline())
-data = []
-for _ in range(N):
-    data.append(list(map(int, sys.stdin.readline().split())))
-qsort(data, 0, N - 1)
-
-for n in range(N):
-    print(*data[n])
