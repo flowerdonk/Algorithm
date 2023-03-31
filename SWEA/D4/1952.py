@@ -1,3 +1,4 @@
+'''Backtracking
 def dfs(n, sm):
     global ans
 
@@ -21,4 +22,24 @@ for tc in range(1, T + 1):
     ans = 365 * 3000
     dfs(1, 0)
 
+    print(f'#{tc} {ans}')
+'''
+
+# greedy
+T = int(input())
+for tc in range(1, T + 1):
+    D, M, T, Y = map(int, input().split())
+    data = [0] + list(map(int, input().split()))
+
+    s = [0] * 13
+    for i in range(1, 13):
+        # 가능한 방법 중 i달까지의 최소 비용
+        s[i] = s[i - 1] + D * data[i] # 일간권
+        s[i] = min(s[i], s[i - 1] + M) # 월간권
+        if i >= 3:
+            s[i] = min(s[i], s[i - 3] + T) # 월간권 - 3달
+        if i >= 12:
+            s[i] = min(s[i], s[i - 12] + Y) # 연간권
+
+    ans = s[12]
     print(f'#{tc} {ans}')
