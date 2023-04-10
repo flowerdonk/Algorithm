@@ -22,18 +22,22 @@ for i in range(N + 2):
             si, sj = i, j
 
 q = deque()
-q.append((si, sj))
+q.append((si, sj, size))
 while q:
-    i, j = q.popleft()
-    mn_dist = 21
-    mn_i, mn_j = 0, 0
+    i, j, s = q.popleft()
+    tlist = []
     for di, dj in (-1, 0), (0, 1), (1, 0), (0, -1):
         ti, tj = i, j
-        temp = 0
-        while True:
-            ni, nj = ti + di, tj + dj
-            if data[ni][nj] != 7 and data[ni][nj] > size:
+        ni, nj = ti + di, tj + dj # 이동한 위치
+        temp = 1 # 이동한 거리
+        flag = 0
+        while data[ni][nj] != 7 and data[ni][nj] <= s:
+            if 0 < data[ni][nj] < s:
+                flag = 1
                 break
-            ti, tj = ni, nj
+            ni += di
+            nj += dj
             temp += 1
-        if
+        if flag == 1:
+            tlist.append((ni, nj, temp)) # 도착한 위치, 거리
+    print(tlist)

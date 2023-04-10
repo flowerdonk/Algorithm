@@ -24,7 +24,7 @@ for tc in range(1, T + 1):
 
     print(f'#{tc} {ans}')
 '''
-
+'''
 # greedy
 T = int(input())
 for tc in range(1, T + 1):
@@ -42,4 +42,25 @@ for tc in range(1, T + 1):
             s[i] = min(s[i], s[i - 12] + Y) # 연간권
 
     ans = s[12]
+    print(f'#{tc} {ans}')
+'''
+def dfs(n, total):
+    global ans
+
+    if n > 12:
+        ans = min(ans, total)
+        return
+
+    dfs(n + 1, total + day * plan[n])
+    dfs(n + 1, total + mon)
+    dfs(n + 3, total + mon3)
+    dfs(n + 12, total + year)
+
+
+T = int(input())
+for tc in range(1, T + 1):
+    ans = 0
+    day, mon, mon3, year = map(int, input().split())
+    plan = list(map(int, input().split()))
+
     print(f'#{tc} {ans}')
