@@ -12,32 +12,61 @@ N X N
 먹을 수 있는 물고기: 자신의 크기보다 작은 물고기(같은 물고기 불가능)
 1. 거리가 가장 가까운 물고기 2. 가장 위에 있는 물고기 3. 가장 왼쪽에 있는 물고기
 '''
+def find_mn(lst, n):
+    idx = 0
+    for l in range(1, len(lst)):
+        if lst[l][n] == lst[0][n]:
+            mn_idx = l
+        else:
+            break
+    return idx
+
 N = int(input())
 data = [[7] * (N + 2)] + [[7] + list(map(int, input().split())) + [7] for _ in range(N)] + [[7] * (N + 2)]
-size = 2
 si, sj = 0, 0
+size = 2
 for i in range(N + 2):
     for j in range(N + 2):
         if data[i][j] == 9:
             si, sj = i, j
 
 q = deque()
-q.append((si, sj, size))
+q.append(((si, sj), 0))
 while q:
-    i, j, s = q.popleft()
+    visited = [[0] * (N + 2) for _ in range(N + 2)]
+    (i, j), s = q.popleft()
+    if s == size:
+        size += 1
+    data[i][j] = 0
+
     tlist = []
     for di, dj in (-1, 0), (0, 1), (1, 0), (0, -1):
         ti, tj = i, j
         ni, nj = ti + di, tj + dj # 이동한 위치
         temp = 1 # 이동한 거리
         flag = 0
-        while data[ni][nj] != 7 and data[ni][nj] <= s:
-            if 0 < data[ni][nj] < s:
-                flag = 1
-                break
-            ni += di
-            nj += dj
-            temp += 1
-        if flag == 1:
-            tlist.append((ni, nj, temp)) # 도착한 위치, 거리
+        for ddi, ddj in (-1, 0), (0, 1), (1, 0), (0, -1):
+            while data[ni][nj] != 7 and data[ni][nj] <= size:
+                if 0 < data[ni][nj] < size:
+                    flag = 1
+                    break
+                ni += ddi
+                nj += ddj
+                temp += 1
+            if flag == 1 and visited[ni][nj] == 0:
+                tlist.append((ni, nj, temp)) # 도착한 위치, 거리
+                visited[ni][nj] = 1
+
+    tlist.sort(key=lambda x:x[2])
+    mn_idx = find_mn(tlist, 2)
+
+    if mn_idx != 0:
+        tlist.sort(key=lambda x:x[0])
+        mn_idx = find_mn(tlist, 0)
+
+        if mn_idx != 0:
+            tlist.sort(key=lambda x:x[1])
+            mn_idx = find_mn(tlist, 1)
+
+    q.append((tlist[mn_idx][:2], s + 1))
     print(tlist)
