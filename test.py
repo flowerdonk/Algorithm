@@ -25,6 +25,7 @@ N = int(input())
 data = [[7] * (N + 2)] + [[7] + list(map(int, input().split())) + [7] for _ in range(N)] + [[7] * (N + 2)]
 si, sj = 0, 0
 size = 2
+time = 0
 for i in range(N + 2):
     for j in range(N + 2):
         if data[i][j] == 9:
@@ -41,21 +42,29 @@ while q:
 
     tlist = []
     for di, dj in (-1, 0), (0, 1), (1, 0), (0, -1):
-        ti, tj = i, j
-        ni, nj = ti + di, tj + dj # 이동한 위치
-        temp = 1 # 이동한 거리
-        flag = 0
-        for ddi, ddj in (-1, 0), (0, 1), (1, 0), (0, -1):
-            while data[ni][nj] != 7 and data[ni][nj] <= size:
-                if 0 < data[ni][nj] < size:
-                    flag = 1
-                    break
-                ni += ddi
-                nj += ddj
-                temp += 1
-            if flag == 1 and visited[ni][nj] == 0:
-                tlist.append((ni, nj, temp)) # 도착한 위치, 거리
-                visited[ni][nj] = 1
+        ti, tj = i + di, j + dj
+        ni, nj = ti, tj # 이동한 위치
+        while data[ni][nj] != 7 and data[ni][nj] <= size and visited[ni][nj] == 0:
+            temp = 1 # 이동한 거리
+            flag = 0
+            for ddi, ddj in (-1, 0), (0, 1), (1, 0), (0, -1):
+                if di == ddi and dj == ddj:
+                    continue
+                while data[ni][nj] != 7 and data[ni][nj] <= size and visited[ni][nj] == 0:
+                    if 0 < data[ni][nj] < size:
+                        flag = 1
+                        break
+                    visited[ni][nj] = 1
+                    ni += ddi
+                    nj += ddj
+                    temp += 1
+                if flag == 1 and visited[ni][nj] == 0:
+                    tlist.append((ni, nj, temp)) # 도착한 위치, 거리
+                if data[ni][nj] != 7:
+                    visited[ni][nj] = 1
+                ni, nj = ti, tj
+            ni += di
+            nj += dj
 
     tlist.sort(key=lambda x:x[2])
     mn_idx = find_mn(tlist, 2)
@@ -68,5 +77,10 @@ while q:
             tlist.sort(key=lambda x:x[1])
             mn_idx = find_mn(tlist, 1)
 
-    q.append((tlist[mn_idx][:2], s + 1))
+    if tlist:
+        q.append((tlist[mn_idx][:2], s + 1))
+        time += tlist[mn_idx][2]
+    else:
+        break
     print(tlist)
+print(time)
