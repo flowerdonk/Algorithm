@@ -12,18 +12,21 @@ for tc in range(T):
         parent[B] = A
     start, end = map(int, input().split())
 
+    # 자기 자신 넣기(자기 자신이 최소 조상 노드일 경우)
     s_ancestor = [start]
     e_ancestor = [end]
+    
     '''
     [2] 부모노드를 따라 올라가며 조상노드 정보 모두 저장
     '''
     while parent[start]:
         s_ancestor.append(parent[start])
-        start = parent[start]
+        start = parent[start] # 시작점 갱신
 
     while parent[end]:
         e_ancestor.append(parent[end])
-        end = parent[end]
+        end = parent[end] # 시작점 갱신
+        
     '''
     [3] 거리 최소, 공통 조상 구하기
     '''
@@ -33,7 +36,7 @@ for tc in range(T):
     for s in range(len(s_ancestor)):
         for e in range(len(e_ancestor)):
             if s_ancestor[s] == e_ancestor[e]:
-                if dist > (s + e + 2):
+                if dist > (s + e + 2): # 최소값 갱신
                     ans = s_ancestor[s]
                     dist = s + e + 2
 
