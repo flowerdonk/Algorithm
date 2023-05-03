@@ -1,44 +1,39 @@
 import sys
 sys.stdin = open('input.txt')
+sys.setrecursionlimit(10 ** 6)
 
 n = int(input())
 bambu = [list(map(int, input().split())) for _ in range(n)]
-# ans: 해당 지점을 시작점으로 이동한 최대 칸 저장
-ans = [[0] * n for _ in range(n)]
+# dp: 해당 지점을 시작점으로 이동한 최대 칸 저장
+dp = [[0] * n for _ in range(n)]
 
 '''
 [1] 특정 지점에서 dfs
-이동 가능한 지점에 ans 값이 있을 경우, 생략 -> DP
+이동 가능한 지점에 dp 값이 있을 경우, 생략 -> DP
 '''
 def dfs(si, sj):
-    direction = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-    stack = [(si, sj, 0)]
-    # 방문 표시
-    visited = [[0] * n for _ in range(n)]
+    # dp에 값이 있으면 이미 이동 가능한 최대 칸이 저장된 지점 -> 값 바로 리턴
+    if dp[si][sj]:
+        return dp[si][sj]
 
-    # 가는 곳 stack에 저장, 후입선출
-    while stack:
-        # 현재 좌표, 이동 칸 수
-        i, j, cnt = stack.pop()
-        # 이동할 수 없는 지점까지 갔을 때, 해당 칸까지의 cnt 저장, 나중에 최댓값 찾기
-        mxs = []
-        # 시계방향으로 돌며 확인, ans에 값이 있으면 continue
-        for di, dj in direction:
-            ni = i + di
-            nj = j + dj
-            if 0 <= ni < n and 0 <= nj < n and visited[ni][nj] == 0:
-                if bambu[ni][nj] > bambu[i][j]:
-                    # 이미 계산한 지점일 경우, 지금까지의 이동 칸 수 + 저장된 값
-                    if ans[ni][nj] != 0:
-                        mxs.append(cnt + ans[ni][nj])
-                        continue
-                    else:
-                        i = ni
-                        j = nj
-                        visited[i][j] = 1
-                        stack.append((i, j, cnt + 1))
-                else:
-                    mxs.append(cnt)
+    # 첫 시작점 1
+    dp[si][sj] = 1
 
-dfs(0, 0)
+    # 시계방향으로 돌며 확인, 계속해서 재귀 호출
+    for di, dj in direction:
+        ni = si + di
+        nj = sj + dj
+        # 이동할 좌표가 범위 내, 또한 이전 좌표보다 대나무 수가 많을 경우
+        if 0 <= ni < n and 0 <= nj < n and bambu[ni][nj] > bambu[si][sj]:
+            # dp 값 갱신 -> dfs로 다시 들어감
+            dp[si][sj] = max(dp[si][sj], dfs(ni, nj) + 1)
+
+    return dp[si][sj]
+
+direction = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+ans = 0
+for i in range(n):
+    for j in range(n):
+        ans = max(ans, dfs(i, j))
+
 print(ans)
