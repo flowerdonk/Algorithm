@@ -5,26 +5,24 @@ import java.util.*;
 
 public class Main {
     static int N, M;
-    static ArrayList<Integer>[] lec;
-    static boolean[][] students;
+    static long[] lectures;
+    static long[] students;
 
     /**
      * [brute force]
      * available
-     * @param studentId 학생 번호
      */
-    private static int available(int studentId) {
-        int count = 0;
+    private static void available() {
+        StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < N; i++) {
-            boolean flag = true;
-            for (int time : lec[i]) {
-                if (!students[studentId][time]) flag = false;
+        for (int i = 0; i < M; i++) {
+            int count = 0;
+            for (int j = 0; j < N; j++) {
+                if ((lectures[j] & students[i]) == lectures[j]) count++;
             }
-            if (flag) count++;
+            sb.append(count).append("\n");
         }
-
-        return count;
+        System.out.println(sb);
     }
 
 
@@ -32,32 +30,34 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        lec = new ArrayList[N];
+        lectures = new long[N];
         StringTokenizer token;
         for (int i = 0; i < N; i++) {
-            lec[i] = new ArrayList<>();
             token = new StringTokenizer(br.readLine());
             int temp = Integer.parseInt(token.nextToken());
+            long mask = 0L;
             for (int j = 0; j < temp; j++) {
-                lec[i].add(Integer.parseInt(token.nextToken()));
+                int time = Integer.parseInt(token.nextToken());
+                mask |= (1L << time);
             }
+            lectures[i] = mask;
         }
 
         M = Integer.parseInt(br.readLine());
-        students = new boolean[M][51];
+        students = new long[M];
         for (int i = 0; i < M; i++) {
             token = new StringTokenizer(br.readLine());
             int temp = Integer.parseInt(token.nextToken());
+            long mask = 0L;
             for (int j = 0; j < temp; j++) {
                 int time = Integer.parseInt(token.nextToken());
-                students[i][time] = true;
+                mask |= (1L << time);
             }
+
+            students[i] = mask;
         }
 
-        for (int i = 0; i < M; i++) {
-            System.out.println(available(i));
-        }
-
+        available();
     }
 
 }
