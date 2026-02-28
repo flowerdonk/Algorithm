@@ -38,6 +38,7 @@ public class Main {
         }
 
         prefixSum();
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < M; i++) {
             token = new StringTokenizer(br.readLine());
@@ -45,8 +46,11 @@ public class Main {
             int y1 = Integer.parseInt(token.nextToken());
             int x2 = Integer.parseInt(token.nextToken());
             int y2 = Integer.parseInt(token.nextToken());
-            System.out.println(dataSum[x2][y2] - dataSum[x2][y1 - 1] - dataSum[x1 - 1][y2] + dataSum[x1 - 1][y1 - 1]);
+            int result = dataSum[x2][y2] - dataSum[x2][y1 - 1] - dataSum[x1 - 1][y2] + dataSum[x1 - 1][y1 - 1];
+            sb.append(result).append("\n");
         }
+
+        System.out.println(sb);
     }
 
 }
